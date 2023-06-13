@@ -1,3 +1,25 @@
+const GameAI = (() => {
+    let playerTurn = 1;
+
+    const getPlayerTurn = () => {
+        return playerTurn;
+    }
+
+    const nextPlayerTurn = () => {
+        playerTurn += 1;
+        if (playerTurn > 2) {
+            playerTurn = 1;
+        }
+    }
+
+    const checkForWinner = () => {
+        // If not true, next player turn
+        nextPlayerTurn();
+    }
+
+    return { getPlayerTurn, checkForWinner }
+})();
+
 const Gameboard = (() => {
     let gameboard = ['', '', '', '', '', '', '', '', ''];
     const cells = document.getElementsByClassName('board-cell');
@@ -9,15 +31,17 @@ const Gameboard = (() => {
     const addPiece = (piece, index) => {
         gameboard[index] = piece;
 
-        refreshBoardPieces();
+        refreshBoard();
     }
 
-    const refreshBoardPieces = () => {
+    const refreshBoard = () => {
         removeAllPiecesOnBoard();
 
         gameboard.forEach((boardPiece, i) => {
             cells[i].textContent = boardPiece;
         });
+
+        GameAI.checkForWinner();
     }
 
     const removeAllPiecesOnBoard = () => {
@@ -38,9 +62,10 @@ function addCellListeners(cells) {
     for (let i = 0; i < 9; i++) {
         cells[i].addEventListener('click', () => {
             if (!cells[i].classList.contains('marked')) {
-                console.log('works');
-                Gameboard.addPiece('O', i);
+                let playerMarker = GameAI.getPlayerTurn() === 1 ? 'O' : 'X';
+                Gameboard.addPiece(playerMarker, i);
                 cells[i].classList.add('marked');
+                cells[i].classList.add(playerMarker.toLocaleLowerCase() + '-cell')
             }
         });
     }

@@ -38,6 +38,16 @@ body {
     background-color: #333;
 }
 
+.o-cell {
+    color: rgb(255, 177, 177);
+    font-weight: bold;
+}
+
+.x-cell {
+    color: rgb(171, 171, 255);
+    font-weight: bold;
+}
+
 @media (max-width: 750px) {
     .board-cell {
         font-size: 3.5rem;
