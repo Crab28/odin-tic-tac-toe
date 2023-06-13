@@ -1,5 +1,6 @@
 const Gameboard = (() => {
-    let gameboard = [];
+    let gameboard = ['O', '', 'O', '', 'X', '', 'O', '', 'O'];
+
 })();
 
 const Player = name => {
