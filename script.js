@@ -12,8 +12,47 @@ const GameAI = (() => {
         }
     }
 
-    const checkForWinner = () => {
-        // If not true, next player turn
+    const checkLineEqual = line => {
+        if (line[0] === line[1] && line[0] === line[2]) {
+            if (line[0] !== '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    const declareWinner = winner => {
+        console.log(winner);
+    }
+    
+
+    const checkForWinner = gameboard => {
+
+        let winner = null;
+
+        while(!winner) {
+            // for loop that loops through all the rows
+            for (let row = 0; row < 3; row++) {
+                let lineCells = [];
+
+                for (let cell = 0; cell < 3; cell++) {
+                    lineCells.push(gameboard[cell + (row * 3)]);
+                }
+
+                if (lineCells.length === 3 && checkLineEqual(lineCells)) {
+                    winner = lineCells[0];
+                    break;
+                }
+            }
+
+            break;
+        }
+        
+        if (winner) {
+            declareWinner(winner);
+        };
+
         nextPlayerTurn();
     }
 
@@ -41,7 +80,7 @@ const Gameboard = (() => {
             cells[i].textContent = boardPiece;
         });
 
-        GameAI.checkForWinner();
+        GameAI.checkForWinner(gameboard);
     }
 
     const removeAllPiecesOnBoard = () => {
