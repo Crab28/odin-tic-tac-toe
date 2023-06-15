@@ -58,7 +58,7 @@ body {
     height: 100px;
 }
 
-#player-container .player h1 {
+#player-container .player h2 {
     font-size: 1.5rem;
 }
 
@@ -112,6 +112,23 @@ body {
 
 .hide-name {
     display: none;
+}
+
+#game-declaration {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 95px;
+}
+
+#announcer {
+    font-size: 1.2rem;
+}
+
+#start-btn {
+    width: 100px;
 }
 
 @media (max-width: 750px) {

@@ -1,6 +1,14 @@
 const GameAI = (() => {
-    let playerTurn = 1;
+    let playerTurn = 1; // Function resets it to 1
     let matchStatus = false; // true if match is in progress
+
+    const startGame = () => {
+        if (!matchStatus) {
+            matchStatus = true;
+            playerTurn = 1; // Function resets it to 1
+            Gameboard.restartGame();
+        }
+    }
 
     const getMatchStatus = () => {
         return matchStatus;
@@ -15,6 +23,8 @@ const GameAI = (() => {
         if (playerTurn > 2) {
             playerTurn = 1;
         }
+
+        GameInterface.announcePlayer(String(playerTurn));
     }
 
     const checkLineEqual = line => {
@@ -28,8 +38,8 @@ const GameAI = (() => {
     }
 
     const declareWinner = winner => {
-        console.log(winner);
         matchStatus = false;
+        GameInterface.announceGame(winner === 'O' ? '1' : '2');
     }
     
 
@@ -81,10 +91,11 @@ const GameAI = (() => {
         nextPlayerTurn();
     }
 
-    return { getPlayerTurn, checkForWinner, getMatchStatus }
+    return { getPlayerTurn, checkForWinner, getMatchStatus, startGame }
 })();
 
 const Gameboard = (() => {
+    let initialStart = true;
     let gameboard = ['', '', '', '', '', '', '', '', ''];
     const cells = document.getElementsByClassName('board-cell');
 
@@ -107,7 +118,11 @@ const Gameboard = (() => {
             cells[i].textContent = boardPiece;
         });
 
-        GameAI.checkForWinner(gameboard);
+        if (initialStart) {
+            initialStart = false;
+        } else {
+            GameAI.checkForWinner(gameboard);
+        }
     }
 
     const removeAllPiecesOnBoard = () => {
@@ -116,13 +131,28 @@ const Gameboard = (() => {
         }
     }
 
-    return { addPiece, getCells }
+    const restartGame = () => {
+        initialStart = true;
+        gameboard = ['', '', '', '', '', '', '', '', ''];
+        for (let i = 0; i < 9; i++) {
+            cells[i].classList.remove('marked');
+            cells[i].classList.remove('o-cell');
+            cells[i].classList.remove('x-cell');
+        }
+        refreshBoard();
+    }
+
+    return { addPiece, getCells, restartGame }
 
 })();
 
 const GameInterface = (() => {
+    const startBtn = document.getElementById('start-btn');
+    const announcer = document.getElementById('announcer');
+
     const initializeInterface = () => {
         initializeNameButtons();
+        initializeStartButton();
     }
 
     const initializeNameButtons = () => {
@@ -167,7 +197,31 @@ const GameInterface = (() => {
         playerName.classList.toggle('hide-name');
     }
 
-    return { initializeInterface }
+    const initializeStartButton = () => {
+        startBtn.addEventListener('click', () => {
+            GameAI.startGame();
+            toggleStartButton();
+        })
+    }
+
+    const toggleStartButton = () => {
+        startBtn.disabled = !startBtn.disabled;
+    }
+
+    const announcePlayer = player => {
+        displayMessage(' Turn!' )
+    }
+
+    const announceGame = winner => {
+        displayMessage(' Wins!')
+        toggleStartButton();
+    }
+
+    const displayMessage = message => {
+        
+    }
+
+    return { initializeInterface, toggleStartButton, announcePlayer, announceGame }
 })();
 
 const Player = name => {

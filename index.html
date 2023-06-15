@@ -10,7 +10,7 @@
 <body>
     <div id="player-container">
         <div class="player">
-            <h1 class="player-name">Player One</h1>
+            <h2 class="player-name">Player One</h2>
             <button class="btn name-btn"><img src="./img/brush-outline.svg" alt="edit"></button>
             <div class="name-prompt hide-name">
                 <input type="text" maxlength="12" class="player-input" placeholder="Enter Name...">
@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="player">
-            <h1 class="player-name">Player Two</h1>
+            <h2 class="player-name">Player Two</h2>
             <button class="btn name-btn"><img src="./img/brush-outline.svg" alt="edit"></button>
             <div class="name-prompt hide-name">
                 <input type="text" maxlength="12" class="player-input" placeholder="Enter Name...">
@@ -37,7 +37,10 @@
         <div class="board-cell"></div>
         <div class="board-cell"></div>
     </div>
-
+    <div id="game-declaration">
+        <h3 id="announcer">Welcome to Tic Tac Toe!</h3>
+        <button class="btn" id="start-btn">Start Game</button>
+    </div>
     <script src="./script.js"></script>
 </body>
 </html>
