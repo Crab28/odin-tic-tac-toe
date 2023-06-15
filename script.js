@@ -46,6 +46,26 @@ const GameAI = (() => {
                 }
             }
 
+            // for loop that loops through all the columns
+            for (let col = 0; col < 3; col++) {
+                let lineCells = [];
+
+                for (let cell = 0; cell < 3; cell++) {
+                    lineCells.push(gameboard[col + (cell * 3)]);
+                }
+
+                if (lineCells.length === 3 && checkLineEqual(lineCells)) {
+                    winner = lineCells[0];
+                    break;
+                }
+            }
+
+            // checks diagnol lines
+            if (checkLineEqual([gameboard[0], gameboard[4], gameboard[8]]) || checkLineEqual([gameboard[2], gameboard[4], gameboard[6]])) {
+                winner = gameboard[4];
+                break;
+            }
+            
             break;
         }
         
