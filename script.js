@@ -1,12 +1,22 @@
 const GameAI = (() => {
-    let playerTurn = 1; // Function resets it to 1
+    let playerTurn = 1;
     let matchStatus = false; // true if match is in progress
+    let players = [];
+
+    const setPlayer = newPlayer => {
+        players.push(newPlayer);
+    }
+
+    const getPlayer = playerNumber => {
+        return players[playerNumber];
+    }
 
     const startGame = () => {
         if (!matchStatus) {
             matchStatus = true;
-            playerTurn = 1; // Function resets it to 1
+            playerTurn = 1;
             Gameboard.restartGame();
+            GameInterface.announcePlayer(players[playerTurn - 1].getPlayerName());
         }
     }
 
@@ -19,12 +29,14 @@ const GameAI = (() => {
     }
 
     const nextPlayerTurn = () => {
-        playerTurn += 1;
-        if (playerTurn > 2) {
-            playerTurn = 1;
+        if (matchStatus) {
+            playerTurn += 1;
+            if (playerTurn > 2) {
+                playerTurn = 1;
+            }
+    
+            GameInterface.announcePlayer(players[playerTurn - 1].getPlayerName());
         }
-
-        GameInterface.announcePlayer(String(playerTurn));
     }
 
     const checkLineEqual = line => {
@@ -39,7 +51,8 @@ const GameAI = (() => {
 
     const declareWinner = winner => {
         matchStatus = false;
-        GameInterface.announceGame(winner === 'O' ? '1' : '2');
+        winnerNumber = winner === 'O' ? 1 : 2;
+        GameInterface.announceGame(getPlayer(winnerNumber - 1).getPlayerName());
     }
     
 
@@ -91,7 +104,7 @@ const GameAI = (() => {
         nextPlayerTurn();
     }
 
-    return { getPlayerTurn, checkForWinner, getMatchStatus, startGame }
+    return { getPlayerTurn, checkForWinner, getMatchStatus, startGame, setPlayer, getPlayer }
 })();
 
 const Gameboard = (() => {
@@ -173,6 +186,7 @@ const GameInterface = (() => {
                 toggleHiddenNames(nameButtons[i], namePrompts[i], playerNames[i]);
                 if (playerInputs[i].value !== '') {
                     playerNames[i].textContent = playerInputs[i].value;
+                    GameAI.getPlayer(i).setPlayerName(playerInputs[i].value);
                     playerInputs[i].value = '';
                 }
             });
@@ -184,6 +198,7 @@ const GameInterface = (() => {
                     toggleHiddenNames(nameButtons[i], namePrompts[i], playerNames[i]);
                     if (playerInputs[i].value !== '') {
                         playerNames[i].textContent = playerInputs[i].value;
+                        GameAI.getPlayer(i).setPlayerName(playerInputs[i].value);
                         playerInputs[i].value = '';
                     }
                 }
@@ -209,23 +224,33 @@ const GameInterface = (() => {
     }
 
     const announcePlayer = player => {
-        displayMessage(' Turn!' )
+        displayMessage(player + "'s Turn!")
     }
 
     const announceGame = winner => {
-        displayMessage(' Wins!')
+        displayMessage(winner + ' Wins!')
         toggleStartButton();
     }
 
     const displayMessage = message => {
-        
+        announcer.textContent = message;
     }
 
     return { initializeInterface, toggleStartButton, announcePlayer, announceGame }
 })();
 
 const Player = name => {
+    let playerName = name;
 
+    const getPlayerName = () => {
+        return playerName;
+    }
+
+    const setPlayerName = newName => {
+        playerName = newName;
+    }
+
+    return { getPlayerName, setPlayerName }
 }
 
 function addCellListeners(cells) {
@@ -241,9 +266,15 @@ function addCellListeners(cells) {
     }
 }
 
+function createPlayers() {
+    GameAI.setPlayer(Player('Player One'));
+    GameAI.setPlayer(Player('Player Two'));
+}
+
 function initializeGame() {
     addCellListeners(Gameboard.getCells());
     GameInterface.initializeInterface();
+    createPlayers();
 }
 
 initializeGame();
