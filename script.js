@@ -54,10 +54,16 @@ const GameAI = (() => {
         winnerNumber = winner === 'O' ? 1 : 2;
         GameInterface.announceGame(getPlayer(winnerNumber - 1).getPlayerName());
     }
+
+    const declareDraw = () => {
+        matchStatus = false;
+        GameInterface.announceGame("It's a Draw! Nobody ");
+    }
     
 
     const checkForWinner = gameboard => {
         let winner = null;
+        let draw = false;
 
         while(!winner) {
             // for loop that loops through all the rows
@@ -94,11 +100,22 @@ const GameAI = (() => {
                 break;
             }
 
+            for (let cell = 0; cell < gameboard.length; cell++) {
+                draw = true;
+
+                if (gameboard[cell] === '') {
+                    draw = false;
+                    break;
+                }
+            }
+
             break;
         }
-        
+
         if (winner) {
             declareWinner(winner);
+        } else if (draw === true) {
+            declareDraw();
         };
 
         nextPlayerTurn();
