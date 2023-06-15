@@ -1,6 +1,6 @@
 const GameAI = (() => {
     let playerTurn = 1;
-    let matchStatus = true; // true if match is in progress
+    let matchStatus = false; // true if match is in progress
 
     const getMatchStatus = () => {
         return matchStatus;
@@ -120,6 +120,56 @@ const Gameboard = (() => {
 
 })();
 
+const GameInterface = (() => {
+    const initializeInterface = () => {
+        initializeNameButtons();
+    }
+
+    const initializeNameButtons = () => {
+        const nameButtons = document.getElementsByClassName('name-btn');
+        const confirmButtons = document.getElementsByClassName('confirm-btn');
+        const playerNames = document.getElementsByClassName('player-name');
+        const namePrompts = document.getElementsByClassName('name-prompt');
+        const playerInputs = document.getElementsByClassName('player-input');
+
+        for (let i = 0; i < nameButtons.length; i++) {
+            nameButtons[i].addEventListener('click', () => {
+                toggleHiddenNames(nameButtons[i], namePrompts[i], playerNames[i]);
+            });
+        }
+
+        for (let i = 0; i < confirmButtons.length; i++) {
+            confirmButtons[i].addEventListener('click', () => {
+                toggleHiddenNames(nameButtons[i], namePrompts[i], playerNames[i]);
+                if (playerInputs[i].value !== '') {
+                    playerNames[i].textContent = playerInputs[i].value;
+                    playerInputs[i].value = '';
+                }
+            });
+        }
+
+        for (let i = 0; i < playerInputs.length; i++) {
+            playerInputs[i].addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    toggleHiddenNames(nameButtons[i], namePrompts[i], playerNames[i]);
+                    if (playerInputs[i].value !== '') {
+                        playerNames[i].textContent = playerInputs[i].value;
+                        playerInputs[i].value = '';
+                    }
+                }
+            });
+        }
+    }
+
+    const toggleHiddenNames = (nameBtn, namePrompt, playerName) => {
+        nameBtn.classList.toggle('hide-name');
+        namePrompt.classList.toggle('hide-name');
+        playerName.classList.toggle('hide-name');
+    }
+
+    return { initializeInterface }
+})();
+
 const Player = name => {
 
 }
@@ -139,6 +189,7 @@ function addCellListeners(cells) {
 
 function initializeGame() {
     addCellListeners(Gameboard.getCells());
+    GameInterface.initializeInterface();
 }
 
 initializeGame();
