@@ -1,5 +1,10 @@
 const GameAI = (() => {
     let playerTurn = 1;
+    let matchStatus = true; // true if match is in progress
+
+    const getMatchStatus = () => {
+        return matchStatus;
+    }
 
     const getPlayerTurn = () => {
         return playerTurn;
@@ -24,11 +29,11 @@ const GameAI = (() => {
 
     const declareWinner = winner => {
         console.log(winner);
+        matchStatus = false;
     }
     
 
     const checkForWinner = gameboard => {
-
         let winner = null;
 
         while(!winner) {
@@ -65,7 +70,7 @@ const GameAI = (() => {
                 winner = gameboard[4];
                 break;
             }
-            
+
             break;
         }
         
@@ -76,7 +81,7 @@ const GameAI = (() => {
         nextPlayerTurn();
     }
 
-    return { getPlayerTurn, checkForWinner }
+    return { getPlayerTurn, checkForWinner, getMatchStatus }
 })();
 
 const Gameboard = (() => {
@@ -88,9 +93,11 @@ const Gameboard = (() => {
     }
 
     const addPiece = (piece, index) => {
-        gameboard[index] = piece;
+        if (GameAI.getMatchStatus()) {
+            gameboard[index] = piece;
 
-        refreshBoard();
+            refreshBoard();
+        }
     }
 
     const refreshBoard = () => {
